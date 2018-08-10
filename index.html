@@ -26,7 +26,6 @@
 			}
 		</script>
 		<script id="fragmentShader" type="x-shader/x-fragment">
-
 			varying vec2 vUv;
 			uniform float time;
 			uniform float mouseX;
@@ -34,7 +33,7 @@
 			void main()	{
 				float  i0, i1, i2, i4, r, g, b, a;
 				vec2 uv = vUv * 17.44;
-				i0= 2.0 + mouseX ;
+				i0= 1.6 + mouseX ;
 				i1=14.0;
 				i2=2.0;
 				i4=.03;
@@ -46,12 +45,10 @@
 					i2*=1.07;
 					i4+=0.005+0.1*1.01*i1;
 				}
-
-			 r=sin(uv.x-time)*0.35+0.5 ;
-			 b=sin(uv.y+time)*0.83*time+0.5+*mouseX ;
-			 g=sin((uv.x+uv.y+sin(time*0.05))*0.5)*0.15+0.5 ;
+			 r=sin(uv.x-time)*0.35+0.5 *mouseX;
+			 b=sin(uv.y+time)*0.83*time+0.5*mouseX*.04 ;
+			 g=sin((uv.x+uv.y+sin(time*0.05))*0.5)*0.15+0.5 * mouseY;
 			 gl_FragColor = vec4(r,g,b,1.0);
-
 			}
 		</script>
 
@@ -75,7 +72,6 @@
 
 
 		<script>
-
 			var webAssemblySupported = (typeof WebAssembly === 'object');
 			var heavyModule = null;
 			var loader = null;
@@ -88,9 +84,6 @@
 			var renderer = new THREE.WebGLRenderer();
 			renderer.setSize( window.innerWidth, window.innerHeight );
 			document.body.appendChild( renderer.domElement );
-
-
-
 			var geometry = new THREE.PlaneBufferGeometry(  2, 2 );
 			uniforms = {
 								time: { value: .60 },
@@ -98,34 +91,24 @@
 								mouseY: { value: 1.  }
 						};
 						var material = new THREE.ShaderMaterial( {
-
 								uniforms: uniforms,
 								vertexShader: document.getElementById( 'vertexShader' ).textContent,
 								fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-
 							} );
 			var cube = new THREE.Mesh( geometry, material );
 			var cube2 = new THREE.Mesh( geometry, material );
 			camera = new THREE.PerspectiveCamera( 100, window.innerWidth/window.innerHeight, 0.1, 10000 );
-
 							cameraRTT = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -10000, 10000 );
 							cameraRTT.position.z = 100;
 			scene.add( cube );
-
-
 			camera.position.z = 9;
-
 			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
-
 			function animate () {
 				requestAnimationFrame( animate );
-
 				cube.rotation.x += 0.01;
 				cube.rotation.y += 0.201;
-
 				renderer.render( scene, camera );
 			};
-
       window.onload = function() {
         if (webAssemblySupported) {
           heavyModule = yo_Module();
@@ -133,7 +116,6 @@
         }
         else {
           console.warn("heavy: web assembly not found, falling back to asm.js");
-
           var script = document.createElement('script');
           script.src = "yo.asm.js";
           script.onload = function() {
@@ -145,12 +127,9 @@
         document.getElementById("transportButton").style.visibility = "hidden";
       }
 			function onDocumentMouseMove( event ) {
-
 				mouseX = ( event.clientX * .001 );
 				mouseY = ( event.clientY * .001 );
-
 			}
-
       function moduleLoaded() {
         loader = new heavyModule.AudioLibLoader();
         loader.init({
@@ -164,7 +143,6 @@
           // will be constructed.
           webAudioContext: null
         });
-
         document.getElementById("transportButton").style.visibility = "visible";
 				start();
 				updateSlider_position(mouseX);
@@ -189,19 +167,15 @@
       // //  document.getElementById("value_gain").textContent = Number(value).toFixed(2);
       //   loader.audiolib.setFloatParameter("gain", value);
       // }
-
 			function animate( timestamp ) {
 						requestAnimationFrame( animate );
 						uniforms.time.value = timestamp / 105.500 ;
 						uniforms.mouseX.value = mouseX;
 						uniforms.mouseY.value = mouseY;
 						loader.audiolib.setFloatParameter("gain", 100.+(mouseX*1000.));
-
 						renderer.render( scene, camera );
 						}
-
 			animate();
-
 		</script>
 
 	</body>
