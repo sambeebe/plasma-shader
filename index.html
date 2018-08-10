@@ -1,180 +1,206 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 	<head>
-		<title> plasma </title>
-		<div id="info"> </a></div>
-
+		<title>My first three.js app</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<script type="application/javascript" src="./yo.js"></script>
 		<style>
-			body {
-				color: #ffffff;
-				font-family:Monospace;
-				font-size:13px;
-				text-align:center;
-				font-weight: bold;
-				background-color: #000000;
-				margin: 0px;
-				overflow: hidden;
-			}
-
-			#info {
-				position: absolute;
-				top: 0px; width: 100%;
-				padding: 5px;
-			}
-
-			a {color: #ffffff;}
-
-		</style>
-	</head>
-	<body>
-
-		<div id="container"></div>
- 		<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r79/three.min.js"></script>
-		<script src="js/Detector.js"></script>
+      .widget { max-width: 900px; margin: auto; }
+      .row { width: 100%; margin-bottom: 10px; }
+      .col { display: inline-block; }
+      .title { width: 100%; margin: 0 auto; }
+      .transport { padding-left: 10px; }
+      .parameter-name { width: 35%; text-align: right; }
+      .parameter-slider { width: 45%; padding-left: 10px; }
+      .parameter-slider input { vertical-align: middle; width: 100%; }
+      .parameter-value { width: 10%; padding-left: 10px; text-align: left; }
+      .link { margin: 10px 10px 0 0; float: right; }
+      span { text-align: right; }
+    </style>
 
 		<script id="vertexShader" type="x-shader/x-vertex">
-
 			varying vec2 vUv;
-
-			void main() {
-
+			void main()	{
 				vUv = uv;
 				gl_Position = vec4( position, 1.0 );
-
 			}
-
 		</script>
-
 		<script id="fragmentShader" type="x-shader/x-fragment">
 
 			varying vec2 vUv;
-
 			uniform float time;
-			vec3 surfColor(vec2 p)
-			{
-			    vec2 q=vec2(sin(.08*p.x),4.*p.y);
-			    vec3 c=vec3(0);
-			    for(float i=0.;i<15.;i++)
-			      c+=(1.+sin(i*sin(time)+vec3(0.,1.3,2.2)))*.2/length(q-vec2(sin(i),12.*sin(.3*time+i)));
-			    return c+vec3(mix(mod(floor(p.x*.2)+floor(p.y*2.2),2.),.2,.4));
-			}
+			uniform float mouseX;
+			uniform float mouseY;
 			void main()	{
+				float  i0, i1, i2, i4, r, g, b, a;
+				vec2 uv = vUv * 17.44;
+				i0= 1.6 + mouseX ;
+				i1=14.0;
+				i2=2.0;
+				i4=.03;
+				for(float i=0.;i<5.;i++) {
+					vec2 a = vec2 (cos(uv.y*i0-i4+time/i1), sin(uv.x*i0-i4+time/i1)) / i2;
+					uv += a;
+					i0*=1.346;
+					i1*=1.5;
+					i2*=1.07;
+					i4+=0.005+0.1*1.01*i1;
+				}
 
-
-//
-// uv = norm * 15.;
-//
-float  i0, i1, i2, i4, r, g, b, a;
-
-vec2 uv = vUv * 17.44;
-
-	 i0= 1.52 ;
-	 i1=1.6;
-	 i2=2.0;
-	 i4=.03;
-	 for(float i=0.;i<14.;i++) {
-	 	vec2 a = vec2 (cos(uv.y*i0-i4+time/i1), sin(uv.x*i0-i4+time/i1)) / i2;
-	  uv += a;
-	 	i0*=1.346;
-	 	i1*=1.2;
-	 	i2*=1.07;
-	 	i4+=0.005+0.1*time*.01*i1;
-		}
-
-
-		r=sin(uv.x-time)*0.5+0.5 ;
-		b=sin(uv.y+time)*0.53+0.5 ;
-		g=sin((uv.x+uv.y+sin(time*0.5))*0.5)*0.5+0.5 ;
-		gl_FragColor = vec4(r,g,b,1.0);
-
-
-		// a = atan(p.x,p.y);
-		// r = length(p)*(.8+.2*sin(0.3*time));
-		// w = cos(2.0*time-r*2.0);
-		// h =  (03.5*sin(time))+0.5*cos(12.0*a-w*7.0+r*8.0+ 0.7*time);
-		// d = 42.25+0.75*pow(h,1.0*r)*(0.7+0.3*w);
-		// f = sqrt(1.0-r/d)*r*2.5;
-		// f *= 14.25+0.25*cos((12.0*a-w*7.0+r*8.0)/2.0*time);
-		// f *= 1.0 - 40.35*(0.5+0.5*sin(r*30.0))*(0.5+0.5*cos(12.0*a-w*7.0+r*8.0));
-		//  col = ( f, f-h*0.5+r*.2 + 0.35*h*(1.0-r),f-h*r + 0.1*h*(1.0-r) );
-		// // col = clamp( sin(col*time), 0., 1.30);
-		// bcol = mix( 0.5*(0.8,0.9,1.0), (1.0), 0.5+0.5*p.y );
-		// col = mix( col, bcol, smoothstep(-04.3,0.8,r-d) );
-
-		//gl_FragColor = vec4( vec3( col ) * d * p.x + vec3( d / 2.0, 2.0 / 2.0 + d / 18.0, 1.0) * d * ( 1.0 - p.x ), 1.0 );
-		// gl_FragColor = vec4( col);
+			 r=sin(uv.x-time)*0.35+0.5 *mouseX;
+			 b=sin(uv.y+time)*0.83*time+0.5*mouseX*.04 ;
+			 g=sin((uv.x+uv.y+sin(time*0.05))*0.5)*0.15+0.5 * mouseY;
+			 gl_FragColor = vec4(r,g,b,1.0);
 
 			}
-
 		</script>
+
+  </head>
+  <body>
+    <div class="widget">
+      <div class="row title">
+        <div class="col"><h2></h2></div>
+	        <div class="col transport">
+	          <label>
+
+	            <input type="checkbox" id="transportButton" onchange="toggleTransport();">
+	        </label>
+					<div class="col parameter-slider">
+						<input id="parameter_position" type="range" min="0.0" max="1000.0" step="0.01" value="0.0" onchange="updateSlider_position(value);" oninput="updateSlider_position(value)">
+					</div>
+        </div>
+      </div>
+    </div>
+
+		<script src="../build/three.js"></script>
 
 		<script>
 
-			//if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
-
+			var webAssemblySupported = (typeof WebAssembly === 'object');
+			var heavyModule = null;
+			var loader = null;
+			var scene = new THREE.Scene();
 			var container;
-
+			var cameraRTT;
 			var camera, scene, renderer;
-
 			var uniforms;
+			var mouseX = 0, mouseY = 0;
+			var renderer = new THREE.WebGLRenderer();
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
 
-			init();
-			animate();
 
-			function init() {
 
-				container = document.getElementById( 'container' );
+			var geometry = new THREE.PlaneBufferGeometry(  2, 2 );
+			uniforms = {
+								time: { value: .60 },
+								mouseX: { value: 1.  },
+								mouseY: { value: 1.  }
+						};
+						var material = new THREE.ShaderMaterial( {
 
-				camera = new THREE.OrthographicCamera( - 1, 1, 1, - 1, 0, 1 );
+								uniforms: uniforms,
+								vertexShader: document.getElementById( 'vertexShader' ).textContent,
+								fragmentShader: document.getElementById( 'fragmentShader' ).textContent
 
-				scene = new THREE.Scene();
+							} );
+			var cube = new THREE.Mesh( geometry, material );
+			var cube2 = new THREE.Mesh( geometry, material );
+			camera = new THREE.PerspectiveCamera( 100, window.innerWidth/window.innerHeight, 0.1, 10000 );
 
-				var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+							cameraRTT = new THREE.OrthographicCamera( window.innerWidth / - 2, window.innerWidth / 2, window.innerHeight / 2, window.innerHeight / - 2, -10000, 10000 );
+							cameraRTT.position.z = 100;
+			scene.add( cube );
 
-				uniforms = {
-					time: { value: 1.0 }
-				};
 
-				var material = new THREE.ShaderMaterial( {
+			camera.position.z = 9;
 
-					uniforms: uniforms,
-					vertexShader: document.getElementById( 'vertexShader' ).textContent,
-					fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+			document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 
-				} );
-
-				var mesh = new THREE.Mesh( geometry, material );
-				scene.add( mesh );
-
-				renderer = new THREE.WebGLRenderer();
-				renderer.setPixelRatio( window.devicePixelRatio );
-				container.appendChild( renderer.domElement );
-
-				onWindowResize();
-
-				window.addEventListener( 'resize', onWindowResize, false );
-
-			}
-
-			function onWindowResize( event ) {
-
-				renderer.setSize( window.innerWidth, window.innerHeight );
-
-			}
-
-			//
-
-			function animate( timestamp ) {
-
+			function animate () {
 				requestAnimationFrame( animate );
 
-				uniforms.time.value = timestamp / 10000;
+				cube.rotation.x += 0.01;
+				cube.rotation.y += 0.201;
 
 				renderer.render( scene, camera );
+			};
+
+      window.onload = function() {
+        if (webAssemblySupported) {
+          heavyModule = yo_Module();
+          heavyModule['onRuntimeInitialized'] = moduleLoaded;
+        }
+        else {
+          console.warn("heavy: web assembly not found, falling back to asm.js");
+
+          var script = document.createElement('script');
+          script.src = "yo.asm.js";
+          script.onload = function() {
+            heavyModule = yo_AsmModule();
+            moduleLoaded();
+          }
+          document.body.appendChild(script);
+        }
+        document.getElementById("transportButton").style.visibility = "hidden";
+      }
+			function onDocumentMouseMove( event ) {
+
+				mouseX = ( event.clientX * .001 );
+				mouseY = ( event.clientY * .001 );
 
 			}
+
+      function moduleLoaded() {
+        loader = new heavyModule.AudioLibLoader();
+        loader.init({
+          // optional: set audio processing block size, default is 2048
+          blockSize: 2048,
+          // optional: provide a callback handler for [print] messages
+          printHook: onPrint,
+          // optional: provide a callback handler for [s {sendName} @hv_param] messages
+          sendHook: onFloatMessage,
+          // optional: pass an existing web audio context, otherwise a new one
+          // will be constructed.
+          webAudioContext: null
+        });
+
+        document.getElementById("transportButton").style.visibility = "visible";
+				start();
+				updateSlider_position(mouseX);
+			//	loader.audiolib.setFloatParameter("gain", 400+ mouseX);
+      }
+      function start() {
+        loader.start();
+      }
+      function stop() {
+        loader.stop();
+      }
+      function toggleTransport(element) {
+        (loader.isPlaying) ? stop() : start();
+      }
+      function onPrint(message) {
+        console.log(message);
+      }
+      function onFloatMessage(sendName, floatValue) {
+        console.log(sendName, floatValue);
+      }
+			// function updateSlider_position(value) {
+      // //  document.getElementById("value_gain").textContent = Number(value).toFixed(2);
+      //   loader.audiolib.setFloatParameter("gain", value);
+      // }
+
+			function animate( timestamp ) {
+						requestAnimationFrame( animate );
+						uniforms.time.value = timestamp / 105.500 ;
+						uniforms.mouseX.value = mouseX;
+						uniforms.mouseY.value = mouseY;
+						loader.audiolib.setFloatParameter("gain", 100.+(mouseX*1000.));
+
+						renderer.render( scene, camera );
+						}
+
+			animate();
 
 		</script>
 
