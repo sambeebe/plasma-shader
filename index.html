@@ -32,8 +32,8 @@
 			uniform float mouseY;
 			void main()	{
 				float  i0, i1, i2, i4, r, g, b, a;
-				vec2 uv = vUv * 17.44;
-				i0= 1.6 + mouseX ;
+				vec2 uv = vUv * 12.44;
+				i0= 1.0  ;
 				i1=14.0;
 				i2=2.0;
 				i4=.03;
@@ -45,9 +45,9 @@
 					i2*=1.07;
 					i4+=0.005+0.1*1.01*i1;
 				}
-			 r=sin(uv.x-time)*0.35+0.5 *mouseX;
-			 b=sin(uv.y+time)*0.83*time+0.5*mouseX*.04 ;
-			 g=sin((uv.x+uv.y+sin(time*0.05))*0.5)*0.15+0.5 * mouseY;
+			 r=sin(uv.x-time)*0.35+0.5;
+			 b=sin(uv.y+time)*0.83*time+0.5*.04 ;
+			 g=sin((uv.x+uv.y+sin(time*0.05))*0.5)*0.15+0.5;
 			 gl_FragColor = vec4(r,g,b,1.0);
 			}
 		</script>
