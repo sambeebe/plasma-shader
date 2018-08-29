@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>My first three.js app</title>
+		<title>plasma shader</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<script type="application/javascript" src="./yo.js"></script>
@@ -37,7 +37,7 @@
 				i1=14.0;
 				i2=2.0;
 				i4=.03;
-				for(float i=0.;i<5.;i++) {
+				for(float i=0.;i<8.;i++) {
 					vec2 a = vec2 (cos(uv.y*i0-i4+time/i1), sin(uv.x*i0-i4+time/i1)) / i2;
 					uv += a;
 					i0*=1.346;
@@ -46,7 +46,7 @@
 					i4+=0.005+0.1*1.01*i1;
 				}
 			 r=sin(uv.x-time)*0.35+0.5;
-			 b=sin(uv.y+time)*0.83*time+0.5 ;
+			 b=sin(uv.y+time)*0.83+0.5 ;
 			 g=sin((uv.x+uv.y+sin(time*0.05))*0.5)*0.815+0.5;
 			 gl_FragColor = vec4(r,g,b,1.0);
 			}
